@@ -27,3 +27,25 @@ var (
 
 const CacheDuration = 6 * time.Hour
 
+
+func InitializeStore() *StorageService {
+
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+
+	pong, err := redisClient.Ping(ctx).Result()
+
+	if err != nil {
+		panic(fmt.Sprintf("Failed to connect to Redis: %v", err))
+	}
+
+	fmt.Println("Redis connection successful:", pong)
+
+	storeService.redisClient = redisClient
+	return storeService
+
+}
+
