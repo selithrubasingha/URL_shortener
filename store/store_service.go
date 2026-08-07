@@ -16,6 +16,8 @@ type StorageService struct {
 // Top level declarations for the storeService and Redis context
 var (
 	storeService  = &StorageService{}
+
+	//ctx is a blank, default context that Redis requires you to pass in to make sure requests don't hang forever
 	ctx = context.Background()
 )
 
@@ -36,7 +38,7 @@ func InitializeStore() *StorageService {
 		DB:       0,  // use default DB
 	})
 
-	pong, err := redisClient.Ping(ctx).Result()
+	pong, err := redisClient.Ping(ctx).Result() // ping checks if the database if awake .
 
 	if err != nil {
 		panic(fmt.Sprintf("Failed to connect to Redis: %v", err))
@@ -55,6 +57,7 @@ and the generated shortUrl url
 
 func SaveUrlMapping(shortUrl string , originalUrl string , userId string)  {
 
+	// Set(ctx , key , value , expiration time) value - the actual heavy data you want to store  .
 	err := storeService.redisClient.Set(ctx, shortUrl, originalUrl, CacheDuration).Err()
 	if err != nil {
 		panic(fmt.Sprintf("Failed saving key url | Error: %v - shortUrl: %s - originalUrl: %s\n", err, shortUrl, originalUrl))
@@ -72,6 +75,7 @@ think about redirect.
 
 func RetrieveInitialUrl(shortUrl string) string {
 
+	// Get(ctx , key) - key is the shortUrl that we generated and stored in the cache
 	result , err := storeService.redisClient.Get(ctx, shortUrl).Result()
 
 	 if err != nil {
