@@ -24,3 +24,11 @@ func base58Encoded(bytes []byte) string {
 
 	return string(encoded)
 }
+
+func GenerateShortLink(initialLink string , userId string ) string {
+	urlHashbytes := sha2560f(initialLink + userId)
+	generatedNumber := new(big.Int).SetBytes(urlHashbytes).Uint64()
+	finalString := base58Encoded([]byte(fmt.Sprintf("%d", generatedNumber)))
+
+	return finalString[:8]
+}
