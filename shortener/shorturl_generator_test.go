@@ -1,34 +1,26 @@
+
 package shortener
 
 import (
-	"crypto/sha256"
-	"fmt"
-	"github.com/itchyny/base58-go"
-	"os"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-func sha2560f(input string) []byte {
-	algorithm := sha256.New()
-	algorithm.Write([]byte(input))
-	return algorithm.Sum(nil)
-}
+const UserId = "e0dba740-fc4b-4977-872c-d360239e6b1a"
 
-func base58Encoded(bytes []byte) string {
-	encoding := base58.BitcoinEncoding
-	encoded, err := encoding.Encode(bytes)
+func TestShortLinkGenerator(t *testing.T) {
+	initialLink_1 := "https://www.guru3d.com/news-story/spotted-ryzen-threadripper-pro-3995wx-processor-with-8-channel-ddr4,2.html"
+	shortLink_1 := GenerateShortLink(initialLink_1, UserId)
 
-	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
+	initialLink_2 := "https://www.eddywm.com/lets-build-a-url-shortener-in-go-with-redis-part-2-storage-layer/"
+	shortLink_2 := GenerateShortLink(initialLink_2, UserId)
 
-	return string(encoded)
-}
+	initialLink_3 := "https://spectrum.ieee.org/automaton/robotics/home-robots/hello-robots-stretch-mobile-manipulator"
+	shortLink_3 := GenerateShortLink(initialLink_3, UserId)
 
-func GenerateShortLink(initialLink string , userId string ) string {
-	urlHashbytes := sha2560f(initialLink + userId)
-	generatedNumber := new(big.Int).SetBytes(urlHashbytes).Uint64()
-	finalString := base58Encoded([]byte(fmt.Sprintf("%d", generatedNumber)))
 
-	return finalString[:8]
+	assert.Equal(t, shortLink_1, "jTa4L57P")
+	assert.Equal(t, shortLink_2, "d66yfx7N")
+	assert.Equal(t, shortLink_3, "dhZTayYQ")
+
 }

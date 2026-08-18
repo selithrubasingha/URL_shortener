@@ -3,10 +3,9 @@ package handler
 import (
 	"net/http"
 
-	"github.com/eddywm/go-shortner/shortener"
-	"github.com/eddywm/go-shortner/store"
+	"github.com/selithrubasingha/URL_shortener/shortener"
+	"github.com/selithrubasingha/URL_shortener/store"
 	"github.com/gin-gonic/gin"
-	"github.com/selithrubasingha/url-shortener/store"
 )
 
 //request model definition
@@ -23,7 +22,7 @@ func CreateShortUrl(c *gin.Context) {
 		return
 	}
 
-	shortUrl, err := shortener.CreateShortUrl(creationRequest.LongUrl, creationRequest.UserId)
+	shortUrl := shortener.GenerateShortLink(creationRequest.LongUrl, creationRequest.UserId)
 	
 	store.SaveUrlMapping(shortUrl,creationRequest.LongUrl , creationRequest.UserId)
 
