@@ -37,6 +37,8 @@ func CreateShortUrl(c *gin.Context) {
 
 func HandleShortUrlRedirect(c *gin.Context) {
 
-	/// Implementation to be added
+	shortUrl := c.Param("shortUrl")
+	initialUrl := store.RetrieveInitialUrl(shortUrl)
+	c.Redirect(302, initialUrl)
 
 }
