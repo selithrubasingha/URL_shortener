@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/selithrubasingha/URL_shortener/handler" // replace with your actual module path
+	"github.com/selithrubasingha/URL_shortener/store" // replace with your actual module path
+
 )
 
 func main() {
@@ -19,6 +22,18 @@ func main() {
 		})
 })
 
+	r.POST("/create-short-url", func(c *gin.Context) {
+		handler.CreateShortUrl(c)
+	})
+
+	r.GET("/:shortUrl", func(c *gin.Context) {
+		handler.HandleShortUrlRedirect(c)
+	})
+
+	// Note that store initialization happens here
+	store.InitializeStore()
+
+	
 	// fires up built in go web server on port 9808.
 	err := r.Run(":9808")
 	if err != nil {
